@@ -445,7 +445,7 @@ public final class Id3Decoder extends SimpleMetadataDecoder {
       }
       return frame;
     } finally {
-      Log.d("id3 Id3Frame decodeFram", "end");
+      Log.d("id3 Id3Frame decodeFrame end", frame.toString());
       id3Data.setPosition(nextFramePosition);
     }
   }
