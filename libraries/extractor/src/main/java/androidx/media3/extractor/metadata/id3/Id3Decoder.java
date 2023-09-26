@@ -110,6 +110,7 @@ public final class Id3Decoder extends SimpleMetadataDecoder {
    */
   @Nullable
   public Metadata decode(byte[] data, int size) {
+    Log.d("id3 Metadata decode", "first");
     List<Id3Frame> id3Frames = new ArrayList<>();
     ParsableByteArray id3Data = new ParsableByteArray(data, size);
 
@@ -149,7 +150,7 @@ public final class Id3Decoder extends SimpleMetadataDecoder {
         id3Frames.add(frame);
       }
     }
-
+    Log.d("id3 Metadata decode", "end");
     return new Metadata(id3Frames);
   }
 
@@ -159,6 +160,7 @@ public final class Id3Decoder extends SimpleMetadataDecoder {
    */
   @Nullable
   private static Id3Header decodeHeader(ParsableByteArray data) {
+    Log.d("id3 Id3Header decodeHeader", "start");
     if (data.bytesLeft() < ID3_HEADER_LENGTH) {
       Log.w(TAG, "Data too short to be an ID3 tag");
       return null;
@@ -206,6 +208,7 @@ public final class Id3Decoder extends SimpleMetadataDecoder {
 
     // isUnsynchronized is advisory only in version 4. Frame level flags are used instead.
     boolean isUnsynchronized = majorVersion < 4 && (flags & 0x80) != 0;
+    Log.d("id3 Id3Header decodeHeader", "end");
     return new Id3Header(majorVersion, isUnsynchronized, framesSize);
   }
 
@@ -216,6 +219,7 @@ public final class Id3Decoder extends SimpleMetadataDecoder {
       boolean unsignedIntFrameSizeHack) {
     int startPosition = id3Data.getPosition();
     try {
+      Log.d("id3 boolean validateFrames", "start");
       while (id3Data.bytesLeft() >= frameHeaderSize) {
         // Read the next frame header.
         int id;
@@ -272,8 +276,10 @@ public final class Id3Decoder extends SimpleMetadataDecoder {
           id3Data.skipBytes((int) frameSize); // flags
         }
       }
+      Log.d("id3 boolean validateFrames", "between");
       return true;
     } finally {
+      Log.d("id3 boolean validateFrames", "end");
       id3Data.setPosition(startPosition);
     }
   }
@@ -285,6 +291,7 @@ public final class Id3Decoder extends SimpleMetadataDecoder {
       boolean unsignedIntFrameSizeHack,
       int frameHeaderSize,
       @Nullable FramePredicate framePredicate) {
+    Log.d("id3 Id3Frame decodeFram", "start");
     int frameId0 = id3Data.readUnsignedByte();
     int frameId1 = id3Data.readUnsignedByte();
     int frameId2 = id3Data.readUnsignedByte();
@@ -438,6 +445,7 @@ public final class Id3Decoder extends SimpleMetadataDecoder {
       }
       return frame;
     } finally {
+      Log.d("id3 Id3Frame decodeFram", "end");
       id3Data.setPosition(nextFramePosition);
     }
   }
@@ -536,6 +544,7 @@ public final class Id3Decoder extends SimpleMetadataDecoder {
   }
 
   private static PrivFrame decodePrivFrame(ParsableByteArray id3Data, int frameSize) {
+    Log.d("id3 PrivFrame decodePrivFrame", "start");
     byte[] data = new byte[frameSize];
     id3Data.readBytes(data, 0, frameSize);
 
@@ -544,7 +553,7 @@ public final class Id3Decoder extends SimpleMetadataDecoder {
 
     int privateDataStartIndex = ownerEndIndex + 1;
     byte[] privateData = copyOfRangeIfValid(data, privateDataStartIndex, data.length);
-
+    Log.d("id3 PrivFrame decodePrivFrame", "end");
     return new PrivFrame(owner, privateData);
   }
 
