@@ -150,7 +150,8 @@ public final class Id3Decoder extends SimpleMetadataDecoder {
         id3Frames.add(frame);
       }
     }
-    Log.d("id3 Metadata decode", "end");
+    Log.d("id3 Metadata decode", "end size", id3Frames.size());
+    Log.d("id3 Metadata decode", "end size", id3Frames.toString());
     return new Metadata(id3Frames);
   }
 
